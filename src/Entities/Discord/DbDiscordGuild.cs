@@ -11,6 +11,7 @@ namespace Colliebot
         public string IconUrl { get; set; }
         public ulong OwnerId { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public DateTime LinkedAt { get; set; }
 
         // Relationships
@@ -31,6 +32,9 @@ namespace Colliebot
             builder.Entity<DbDiscordGuild>()
                 .Property(x => x.CreatedAt)
                 .IsRequired();
+            builder.Entity<DbDiscordGuild>()
+                .Property(x => x.UpdatedAt)
+                .ValueGeneratedOnUpdate();
             builder.Entity<DbDiscordGuild>()
                 .Property(x => x.LinkedAt)
                 .ValueGeneratedOnAdd()

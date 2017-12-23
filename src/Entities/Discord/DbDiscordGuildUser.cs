@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Colliebot
 {
@@ -11,6 +12,7 @@ namespace Colliebot
         public int Hierarchy { get; set; }
         public ulong PermissionsValue { get; set; }
         public string HexColorCode { get; set; } = null;
+        public DateTime UpdatedAt { get; set; }
 
         // Relationships
         public DbDiscordGuild Guild { get; set; }
@@ -26,6 +28,9 @@ namespace Colliebot
             builder.Entity<DbDiscordGuildUser>()
                 .Property(x => x.HexColorCode)
                 .HasMaxLength(7);
+            builder.Entity<DbDiscordGuildUser>()
+                .Property(x => x.UpdatedAt)
+                .ValueGeneratedOnUpdate();
 
             builder.Entity<DbDiscordGuildUser>()
                 .HasOne(x => x.Guild)

@@ -12,6 +12,7 @@ namespace Colliebot
         public ushort Discriminator { get; set; }
         public string IconUrl { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public DateTime LinkedAt { get; set; }
 
         // Relationships
@@ -34,6 +35,9 @@ namespace Colliebot
             builder.Entity<DbDiscordUser>()
                 .Property(x => x.CreatedAt)
                 .IsRequired();
+            builder.Entity<DbDiscordUser>()
+                .Property(x => x.UpdatedAt)
+                .ValueGeneratedOnUpdate();
             builder.Entity<DbDiscordUser>()
                 .Property(x => x.LinkedAt)
                 .ValueGeneratedOnAdd()
