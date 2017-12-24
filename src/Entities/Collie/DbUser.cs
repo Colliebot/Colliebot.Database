@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Colliebot
 {
@@ -11,6 +12,7 @@ namespace Colliebot
         public DateTime UpdatedAt { get; set; }
 
         // Relationships
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DbDiscordUser Discord { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 
 namespace Colliebot
@@ -15,7 +16,9 @@ namespace Colliebot
         public DateTime UpdatedAt { get; set; }
 
         // Relationships
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DbDiscordGuild Guild { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DbDiscordUser User { get; set; }
 
         internal static void AddModel(ModelBuilder builder)
