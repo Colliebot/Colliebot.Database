@@ -33,10 +33,10 @@ namespace Colliebot
         {
             builder.UseInMemoryDatabase("testing");
 
-            //string connection = $"Server={_config["postgre:server"]};" +
-            //    $"Port={_config["postgre:port"]};" +
-            //    $"User ID={_config["postgre:user"]};" +
-            //    $"Password={_config["postgre:password"]};" +
+            //string connection = $"Server={_config["postgres:server"]};" +
+            //    $"Port={_config["postgres:port"]};" +
+            //    $"User ID={_config["postgres:user"]};" +
+            //    $"Password={_config["postgres:password"]};" +
             //    $"Database=test;";
             //builder.UseNpgsql(connection);
         }
