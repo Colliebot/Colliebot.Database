@@ -7,10 +7,10 @@ namespace Colliebot
         public static IServiceCollection AddCollieDatabase(this IServiceCollection services)
         {
             services.AddDbContext<RootDatabase>()
-                .AddSingleton<UserManager>()
-                .AddSingleton<DiscordUserManager>()
-                .AddSingleton<DiscordGuildManager>()
-                .AddSingleton<DiscordGuildUserManager>();
+                .AddTransient<UserManager>()
+                .AddTransient<DiscordUserManager>()
+                .AddTransient<DiscordGuildManager>()
+                .AddTransient<DiscordGuildUserManager>();
             return services;
         }
     }

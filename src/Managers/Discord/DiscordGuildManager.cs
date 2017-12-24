@@ -9,18 +9,7 @@ namespace Colliebot
 {
     public class DiscordGuildManager : DbManager<RootDatabase>
     {
-        private readonly DiscordUserManager _discordUsers;
-        private readonly DiscordGuildUserManager _discordGuildUsers;
-
-        public DiscordGuildManager(
-            RootDatabase db,
-            DiscordUserManager discordUsers,
-            DiscordGuildUserManager discordGuildUsers)
-            : base(db)
-        {
-            _discordUsers = discordUsers;
-            _discordGuildUsers = discordGuildUsers;
-        }
+        public DiscordGuildManager(RootDatabase db) : base(db) { }
 
         public async Task<DbDiscordGuild> GetGuildAsync(ulong id, params DiscordGuildInclude[] include)
         {
@@ -29,13 +18,13 @@ namespace Colliebot
             if (guild == null || include.Count() == 0)
                 return guild;
             if (include.Contains(DiscordGuildInclude.Owner))
-                guild.Owner = await _discordUsers.GetUserAsync(guild.OwnerId).ConfigureAwait(false);
+                guild.Owner = await _db.DiscordUsers.SingleOrDefaultAsync(x => x.Id == guild.OwnerId).ConfigureAwait(false);
             if (include.Contains(DiscordGuildInclude.Users))
             {
-                var guildUsers = await _discordGuildUsers.GetGuildUsersAsync(x => x.GuildId == guild.Id).ConfigureAwait(false);
-                guild.Users = guildUsers.ToList();
+                var guildUsers = await _db.DiscordGuildUsers.Where(x => x.GuildId == guild.Id).ToArrayAsync().ConfigureAwait(false);
+                guild.Users = guildUsers.Paginate().ToList();
             }
-
+            
             return guild;
         }
 

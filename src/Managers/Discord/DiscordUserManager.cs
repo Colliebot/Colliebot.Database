@@ -9,21 +9,7 @@ namespace Colliebot
 {
     public class DiscordUserManager : DbManager<RootDatabase>
     {
-        private readonly UserManager _users;
-        private readonly DiscordGuildManager _discordGuilds;
-        private readonly DiscordGuildUserManager _discordGuildUsers;
-
-        public DiscordUserManager(
-            RootDatabase db,
-            UserManager users,
-            DiscordGuildManager discordGuilds,
-            DiscordGuildUserManager discordGuildUsers) 
-            : base(db)
-        {
-            _users = users;
-            _discordGuilds = discordGuilds;
-            _discordGuildUsers = discordGuildUsers;
-        }
+        public DiscordUserManager(RootDatabase db) : base(db) { }
 
         public async Task<DbDiscordUser> GetUserAsync(ulong id, params DiscordUserInclude[] include)
         {
@@ -32,16 +18,16 @@ namespace Colliebot
             if (user == null || include.Count() == 0)
                 return user;
             if (include.Contains(DiscordUserInclude.User))
-                user.User = await _users.GetUserAsync(user.Id).ConfigureAwait(false);
+                user.User = await _db.Users.SingleOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
             if (include.Contains(DiscordUserInclude.Guilds))
             {
-                var guilds = await _discordGuildUsers.GetGuildUsersAsync(x => x.UserId == user.Id).ConfigureAwait(false);
-                user.Guilds = guilds.ToList();
+                var guilds = await _db.DiscordGuildUsers.Where(x => x.UserId == user.Id).ToListAsync().ConfigureAwait(false);
+                user.Guilds = guilds.Paginate().ToList();
             }
             if (include.Contains(DiscordUserInclude.OwnedGuilds))
             {
-                var ownedGuilds = await _discordGuilds.GetGuildsAsync(x => x.OwnerId == user.Id).ConfigureAwait(false);
-                user.OwnedGuilds = ownedGuilds.ToList();
+                var ownedGuilds = await _db.DiscordGuilds.Where(x => x.OwnerId == user.Id).ToArrayAsync().ConfigureAwait(false);
+                user.OwnedGuilds = ownedGuilds.Paginate().ToList();
             }
             
             return user;

@@ -9,13 +9,7 @@ namespace Colliebot
 {
     public class UserManager : DbManager<RootDatabase>
     {
-        private readonly DiscordUserManager _discordUsers;
-
-        public UserManager(RootDatabase db, DiscordUserManager discordUsers) 
-            : base(db)
-        {
-            _discordUsers = discordUsers;
-        }
+        public UserManager(RootDatabase db) : base(db) { }
 
         public async Task<DbUser> GetUserAsync(ulong id, params UserInclude[] include)
         {
@@ -24,7 +18,7 @@ namespace Colliebot
             if (User == null || include.Count() == 0)
                 return User;
             if (include.Contains(UserInclude.DiscordUser))
-                User.Discord = await _discordUsers.GetUserAsync(User.Id).ConfigureAwait(false);
+                User.Discord = await _db.DiscordUsers.SingleOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
 
             return User;
         }
