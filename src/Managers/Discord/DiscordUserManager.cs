@@ -11,7 +11,7 @@ namespace Colliebot
     {
         public DiscordUserManager(RootDatabase db) : base(db) { }
 
-        public async Task<DbDiscordUser> GetUserAsync(ulong id, params DiscordUserInclude[] include)
+        public async Task<DbDiscordUser> GetAsync(ulong id, params DiscordUserInclude[] include)
         {
             var user = await _db.DiscordUsers.SingleOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
 
@@ -33,13 +33,19 @@ namespace Colliebot
             return user;
         }
 
+        public async Task<DateTime?> GetLastUpdatedAsync(ulong id)
+        {
+            var user = await _db.DiscordUsers.SingleOrDefaultAsync(x => x.Id == id).ConfigureAwait(false);
+            return user.UpdatedAt;
+        }
+
         public async Task<IEnumerable<DbDiscordUser>> GetUsersAsync(Expression<Func<DbDiscordUser, bool>> expression, int offset = Constants.DefaultPageOffset, int limit = Constants.DefaultPageSize)
             => await _db.DiscordUsers.Where(expression).Skip(offset).Take(limit).ToArrayAsync().ConfigureAwait(false);
 
-        public async Task<bool> UserExistsAsync(ulong id)
+        public async Task<bool> ExistsAsync(ulong id)
             => await _db.DiscordUsers.AnyAsync(x => x.Id == id).ConfigureAwait(false);
 
-        public async Task<int> GetUsersCountAsync(Expression<Func<DbDiscordUser, bool>> expression)
+        public async Task<int> CountAsync(Expression<Func<DbDiscordUser, bool>> expression)
             => await _db.DiscordUsers.CountAsync(expression).ConfigureAwait(false);
 
         public async Task CreateAsync(DbDiscordUser User)
